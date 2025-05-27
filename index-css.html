@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Local Community Event Portal - CSS Exercises</title>
+
+  <!-- Google Font import -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ------------------------------
+       1. Reset margin/padding for all elements using universal selector
+    ------------------------------ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ------------------------------
+       1 & 4. Body styles with background image and fallback color (internal CSS)
+    ------------------------------ */
+    body {
+      background: #f9f9f9 url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Roboto', Arial, sans-serif;
+      margin: 0;
+      padding: 0 20px 40px;
+      color: rgba(33, 33, 33, 0.9);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    /* ------------------------------
+       1. Inline style demo on #welcomeBanner (color red) is in the element itself
+    ------------------------------ */
+
+    /* ------------------------------
+       2. Header Styles
+    ------------------------------ */
+    #mainHeader {
+      font-size: 2.5rem;
+      color: #333;
+      text-align: center;
+      padding: 30px 0;
+    }
+
+    /* ------------------------------
+       3. Event Card Styles (class selectors)
+    ------------------------------ */
+    .eventCard {
+      background-color: rgba(255, 255, 255, 0.8);
+      margin: 15px auto;
+      padding: 15px 25px;
+      border-radius: 10px;
+      max-width: 600px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    /* ------------------------------
+       3 & 4. Highlight class with border and background color
+    ------------------------------ */
+    .highlight {
+      border-left: 5px solid #4a90e2;
+      background-color: #f0f8ff;
+      font-weight: bold;
+    }
+
+    /* ------------------------------
+       3. Grouping selector for h3 and .description
+    ------------------------------ */
+    h3, .description {
+      color: #444;
+    }
+
+    /* ------------------------------
+       4. Gradient background for section headers
+    ------------------------------ */
+    section > h2 {
+      background: linear-gradient(90deg, #4a90e2, #9013fe);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    /* ------------------------------
+       5. Typography enhancements
+    ------------------------------ */
+    h1, h2, h3 {
+      font-weight: 700;
+    }
+
+    .description {
+      font-style: italic;
+      letter-spacing: 0.05em;
+      text-align: justify;
+      line-height: 1.6;
+    }
+
+    /* ------------------------------
+       6. Link styling with pseudo-classes
+    ------------------------------ */
+    a:link {
+      color: #0066cc;
+      text-decoration: none;
+    }
+    a:hover {
+      color: #004a99;
+      text-decoration: underline;
+    }
+    a:visited {
+      color: #551a8b;
+    }
+    a:active {
+      color: #ff6600;
+    }
+
+    /* ------------------------------
+       6. Nav list styles (remove bullets, horizontal spacing)
+    ------------------------------ */
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 20px 0;
+      display: flex;
+      gap: 15px;
+    }
+    nav ul li {
+      padding: 5px 10px;
+    }
+    nav ul li a {
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 4px;
+      background: rgba(255 255 255 / 0.8);
+      transition: background-color 0.3s ease;
+    }
+    nav ul li a:hover {
+      background-color: #e1eaff;
+    }
+
+    /* ------------------------------
+       7. Table styling
+    ------------------------------ */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 600px;
+      margin: 20px auto;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4a90e2;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f7f7f7;
+    }
+
+    /* ------------------------------
+       8. Box model control for event cards and form fields
+    ------------------------------ */
+    .eventCard {
+      border: 2px solid #ddd;
+      padding: 20px;
+      margin-bottom: 20px;
+      outline-offset: 4px;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: 2px solid #4a90e2;
+      outline-offset: 2px;
+    }
+
+    /* ------------------------------
+       9. Multi-column text layout for community bulletin
+    ------------------------------ */
+    #newsArticle {
+      column-count: 2;
+      column-gap: 30px;
+      column-rule: 1px solid gray;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 15px;
+      background: rgba(255 255 255 / 0.9);
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.05);
+    }
+
+    /* ------------------------------
+       10. Responsive web design with media queries
+    ------------------------------ */
+    @media screen and (max-width: 768px) {
+      nav ul {
+        flex-direction: column;
+        gap: 10px;
+      }
+      nav ul li a {
+        display: block;
+        text-align: center;
+      }
+      img.responsive-img {
+        max-width: 80vw;
+      }
+      body {
+        font-size: 14px;
+      }
+    }
+
+    /* ------------------------------
+       6 (footer) list styling
+    ------------------------------ */
+    .footerList {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      padding-top: 15px;
+    }
+
+    .footerList li a {
+      color: #555;
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .footerList li a:hover {
+      background-color: #ddd;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <ul>
+      <li><a href="#welcomeBanner">Home</a></li>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="help.html" target="_blank">Help</a></li>
+    </ul>
+  </nav>
+
+  <!-- Welcome Banner with inline style making heading red -->
+  <header id="welcomeBanner" class="highlight" style="color: red;">
+    <h1>Welcome to Our Local Community Event Portal</h1>
+  </header>
+
+  <!-- Events Section -->
+  <section id="events">
+    <h2>Upcoming Events</h2>
+
+    <div class="eventCard">
+      <h3>Community Cleanup</h3>
+      <p class="description">Join us to help clean up our local park and make our city greener.</p>
+    </div>
+
+    <div class="eventCard highlight">
+      <h3>City Festival</h3>
+      <p class="description">Enjoy music, food, and games at the annual city festival.</p>
+    </div>
+
+    <div class="eventCard">
+      <h3>Sports Day</h3>
+      <p class="description">Friendly sports competitions for all ages and skill levels.</p>
+    </div>
+  </section>
+
+  <!-- News Article with Multi-columns -->
+  <section id="newsArticle">
+    <h2>Community Bulletin</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sodales turpis et mauris egestas, et dictum urna dapibus. Phasellus dignissim elit ut justo fringilla pretium. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Integer in sapien in ex vestibulum luctus ut a nulla.</p>
+    <p>Praesent vitae lectus vel augue fringilla sagittis. Aliquam erat volutpat. Cras vitae luctus nunc, in fermentum erat. Curabitur sit amet neque id metus viverra dignissim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+    <p>Donec eu felis sit amet arcu malesuada lacinia. Sed rutrum felis non augue pulvinar, et dapibus neque fermentum. Mauris consequat sodales ante, vitae luctus magna cursus in.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <h2>Contact Us</h2>
+    <p>Phone: <span class="highlight">+1 234 567 8900</span></p>
+    <p>Email: <a href="mailto:info@communityevents.com">info@communityevents.com</a></p>
+    <ul class="footerList">
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Use</a></li>
+    </ul>
+  </footer>
+
+</body>
+</html>
