@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Local Community Event Portal - JS Exercises</title>
+<style>
+  /* Basic styling for event cards and form */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #f5f5f5;
+  }
+  #eventsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  .eventCard {
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 0 5px #ccc;
+    padding: 15px;
+    width: 300px;
+    position: relative;
+  }
+  .eventCard h3 {
+    margin-top: 0;
+  }
+  .hidden {
+    display: none;
+  }
+  form {
+    max-width: 400px;
+    background: white;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 0 5px #ccc;
+  }
+  form div {
+    margin-bottom: 12px;
+  }
+  label {
+    display: block;
+    margin-bottom: 6px;
+  }
+  input, select {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+  button {
+    background: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #0056b3;
+  }
+  #message {
+    margin-top: 15px;
+    font-weight: bold;
+  }
+  #loadingSpinner {
+    display: none;
+    font-style: italic;
+    color: #555;
+  }
+</style>
+</head>
+<body>
+
+<h1>Local Community Event Portal</h1>
+
+<!-- Filter by category -->
+<label for="categoryFilter">Filter by Category:</label>
+<select id="categoryFilter">
+  <option value="all">All</option>
+  <option value="Music">Music</option>
+  <option value="Workshop">Workshop</option>
+  <option value="Sports">Sports</option>
+  <option value="Festival">Festival</option>
+</select>
+
+<!-- Events container -->
+<div id="eventsContainer"></div>
+
+<!-- Registration Form -->
+<h2>Register for an Event</h2>
+<form id="registrationForm">
+  <div>
+    <label for="userName">Name:</label>
+    <input type="text" id="userName" name="userName" required />
+    <small class="error" style="color:red;display:none;">Name is required.</small>
+  </div>
+  <div>
+    <label for="userEmail">Email:</label>
+    <input type="email" id="userEmail" name="userEmail" required />
+    <small class="error" style="color:red;display:none;">Valid email is required.</small>
+  </div>
+  <div>
+    <label for="eventSelect">Select Event:</label>
+    <select id="eventSelect" name="eventSelect" required>
+      <!-- Options added dynamically -->
+    </select>
+    <small class="error" style="color:red;display:none;">Please select an event.</small>
+  </div>
+  <button type="submit" id="registerBtn">Register</button>
+</form>
+
+<p id="message"></p>
+<p id="loadingSpinner">Loading events, please wait...</p>
+
+<script>
+  /* 1. JavaScript Basics & Setup */
+  console.log("Welcome to the Community Portal");
+
+  window.addEventListener('load', () => {
+    alert("Page fully loaded. Welcome!");
+  });
+
+  /* 5. Event constructor with prototype */
+  function Event(name, date, category, seats, location) {
+    this.name = name;
+    this.date = new Date(date);
+    this.category = category;
+    this.seats = seats;
+    this.location = location;
+  }
+
+  Event.prototype.checkAvailability = function() {
+    return this.seats > 0 && this.date >= new Date();
+  };
+
+  /* 6. Initial event array */
+  let events = [
+    new Event("Music Festival", "2025-08-10", "Music", 100, "City Park"),
+    new Event("Baking Workshop", "2025-06-15", "Workshop", 20, "Community Center"),
+    new Event("Local Soccer Match", "2025-05-30", "Sports", 0, "Stadium"),
+    new Event("Art Festival", "2024-12-01", "Festival", 50, "Downtown"),
+    new Event("Jazz Night", "2025-07-21", "Music", 25, "Jazz Club")
+  ];
+
+  /* 4. Closure for tracking total registrations per category */
+  function createRegistrationTracker() {
+    const registrations = {};
+    return {
+      register(category) {
+        registrations[category] = (registrations[category] || 0) + 1;
+      },
+      getRegistrations(category) {
+        return registrations[category] || 0;
+      }
+    };
+  }
+  const registrationTracker = createRegistrationTracker();
+
+  /* 7. Render events on page */
+  const eventsContainer = document.getElementById('eventsContainer');
+  const eventSelect = document.getElementById('eventSelect');
+  const categoryFilter = document.getElementById('categoryFilter');
+  const message = document.getElementById('message');
+  const loadingSpinner = document.getElementById('loadingSpinner');
+
+  function clearEvents() {
+    eventsContainer.innerHTML = "";
+    eventSelect.innerHTML = "<option value=''>-- Select an Event --</option>";
+  }
+
+  /* 3 & 6. Filter and display valid events with seats */
+  function displayEvents(eventList) {
+    clearEvents();
+    eventList.forEach(event => {
+      if (!event.checkAvailability()) return; // Hide past/full events
+
+      // Create event card
+      const card = document.createElement('div');
+      card.className = 'eventCard';
+
+      card.innerHTML = `
+        <h3>${event.name}</h3>
+        <p><strong>Date:</strong> ${event.date.toDateString()}</p>
+        <p><strong>Category:</strong> ${event.category}</p>
+        <p><strong>Location:</strong> ${event.location}</p>
+        <p><strong>Seats left:</strong> <span class="seatsLeft">${event.seats}</span></p>
+        <button type="button" class="registerBtn">Register</button>
+      `;
+
+      // Register button handler (8)
+      card.querySelector('.registerBtn').onclick = () => {
+        try {
+          registerUser(event);
+        } catch (error) {
+          alert(error.message);
+        }
+      };
+
+      eventsContainer.appendChild(card);
+
+      // Add to registration form select dropdown
+      const option = document.createElement('option');
+      option.value = event.name;
+      option.textContent = event.name;
+      eventSelect.appendChild(option);
+    });
+  }
+
+  /* 4. Filter events by category (callback passed) */
+  function filterEventsByCategory(category, callback) {
+    if (category === "all") return callback(events);
+    const filtered = events.filter(event => event.category === category);
+    callback(filtered);
+  }
+
+  /* 2 & 3. Registration logic */
+  function registerUser(eventObj) {
+    if (eventObj.seats <= 0) throw new Error("No seats available for this event.");
+    eventObj.seats--;
+    registrationTracker.register(eventObj.category);
+    updateUIAfterRegistration(eventObj);
+    message.textContent = `Successfully registered for ${eventObj.name}! Total registrations for ${eventObj.category}: ${registrationTracker.getRegistrations(eventObj.category)}.`;
+  }
+
+  /* 7. Update UI to reflect seat count */
+  function updateUIAfterRegistration(eventObj) {
+    // Update seat count on event cards
+    const cards = document.querySelectorAll('.eventCard');
+    cards.forEach(card => {
+      if (card.querySelector('h3').textContent === eventObj.name) {
+        const seatsSpan = card.querySelector('.seatsLeft');
+        seatsSpan.textContent = eventObj.seats;
+        if(eventObj.seats === 0){
+          card.querySelector('.registerBtn').disabled = true;
+          card.querySelector('.registerBtn').textContent = 'Full';
+        }
+      }
+    });
+
+    // Update registration form select options seats check - disable if full
+    [...eventSelect.options].forEach(option => {
+      if (option.value === eventObj.name && eventObj.seats === 0) {
+        option.disabled = true;
+      }
+    });
+  }
+
+  /* 8. Filter change event */
+  categoryFilter.onchange = function() {
+    filterEventsByCategory(this.value, displayEvents);
+  };
+
+  /* 11. Form submission handling */
+  const registrationForm = document.getElementById('registrationForm');
+  registrationForm.onsubmit = function(e) {
+    e.preventDefault();
+
+    // Simple inline validation
+    const nameInput = this.userName;
+    const emailInput = this.userEmail;
+    const eventSelected = this.eventSelect.value;
+
+    // Reset errors
+    this.querySelectorAll('.error').forEach(err => err.style.display = 'none');
+    let valid = true;
+
+    if (!nameInput.value.trim()) {
+      this.userName.nextElementSibling.style.display = 'inline';
+      valid = false;
+    }
+    if (!emailInput.value.trim() || !emailInput.value.includes('@')) {
+      this.userEmail.nextElementSibling.style.display = 'inline';
+      valid = false;
+    }
+    if (!eventSelected) {
+      this.eventSelect.nextElementSibling.style.display = 'inline';
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    // Find event object
+    const eventObj = events.find(e => e.name === eventSelected);
+
+    try {
+      registerUser(eventObj);
+      this.reset();
+      message.style.color = "green";
+    } catch (err) {
+      message.textContent = err.message;
+      message.style.color = "red";
+    }
+  };
+
+  /* 9. Async Fetch simulation */
+  async function fetchEvents() {
+    loadingSpinner.style.display = 'block';
+    try {
+      // Simulate fetch delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Simulated fetched data (could be fetched from an API)
+      const fetchedEvents = [
+        new Event("New Year Party", "2025-12-31", "Festival", 200, "City Hall"),
+        new Event("Rock Concert", "2025-09-10", "Music", 75, "Arena")
+      ];
+
+      // Merge events without duplicates (by name)
+      const existingNames = new Set(events.map(e => e.name));
+      fetchedEvents.forEach(e => {
+        if (!existingNames.has(e.name)) events.push(e);
+      });
+
+      filterEventsByCategory(categoryFilter.value, displayEvents);
+      message.textContent = "Events loaded successfully.";
+      message.style.color = "green";
+    } catch (err) {
+      message.textContent = "Failed to load events.";
+      message.style.color = "red";
+    } finally {
+      loadingSpinner.style.display = 'none';
+    }
+  }
+
+  /* 10. Modern JS example with destructuring and spread */
+  function getEventSummaries(eventsList = events) {
+    return [...eventsList]
+      .filter(({category}) => category === 'Music')
+      .map(({name}) => `🎵 ${name}`);
+  }
+
+  console.log(getEventSummaries());
+
+  /* 14. jQuery snippet example (commented out - assuming jQuery loaded) */
+  /*
+  $(document).ready(function() {
+    $('#registerBtn').click(function() {
+      alert('Register button clicked!');
+    });
+    $('.eventCard').fadeIn();
+  });
+  */
+
+  /* Benefit of frameworks:
+     Using frameworks like React or Vue helps manage UI state efficiently,
+     enables component reuse, and simplifies DOM updates and event handling. */
+
+  // Initial render of events
+  displayEvents(events);
+
+  // Fetch additional events asynchronously
+  fetchEvents();
+</script>
+
+</body>
+</html>
